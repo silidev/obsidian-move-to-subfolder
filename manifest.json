@@ -1,0 +1,9 @@
+{
+  "id": "move-to-subfolder",
+  "name": "Move to Subfolder",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Moves the current note into a new subfolder named after the note, with an option to rename the subfolder.",
+  "author": "Helge Tobias Kosuch",
+  "isDesktopOnly": false
+}

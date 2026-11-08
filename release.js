@@ -8,13 +8,14 @@
  * Automates:
  * 1. Build & validation commands (if configured)
  * 2. Uncommitted changes check (git status --porcelain)
- * 3. Reading version from manifest file (e.g. manifest.json)
+ * 3. Reading version & plugin id from manifest file (e.g. manifest.json)
  * 4. Duplicate tag check (ensures version is not already released)
  * 5. Extracting release notes from changelog (e.g. README.md or CHANGELOG.md)
  * 6. Pushing unpushed commits to origin
  * 7. Creating and pushing git tag
  * 8. Creating GitHub Release via GitHub API
  * 9. Uploading required & optional release assets
+ * 10. Opening the plugin's check-release page in the user's default browser
  */
 
 const fs = require('fs');
@@ -28,7 +29,9 @@ const DEFAULT_CONFIG = {
   changelogPath: 'README.md',
   assets: ['manifest.json', 'main.js'],
   optionalAssets: ['styles.css'],
-  gitRemote: 'origin'
+  gitRemote: 'origin',
+  openCheckReleaseUrl: true,
+  checkReleaseUrlTemplate: 'https://community.obsidian.md/account/plugins/{pluginId}/check-release'
 };
 
 function loadConfig() {
@@ -49,6 +52,21 @@ function loadConfig() {
 
 function exec(cmd, opts = {}) {
   return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], ...opts }).trim();
+}
+
+function openInBrowser(url) {
+  try {
+    const cmd = process.platform === 'win32'
+      ? `start "" "${url}"`
+      : process.platform === 'darwin'
+      ? `open "${url}"`
+      : `xdg-open "${url}"`;
+    execSync(cmd, { shell: process.platform === 'win32' ? 'cmd.exe' : undefined, stdio: 'ignore' });
+    console.log(`🌐 Opened in browser: ${url}`);
+  } catch (err) {
+    console.warn(`⚠️  Could not open browser automatically: ${err.message}`);
+    console.log(`🔗 Open manually: ${url}`);
+  }
 }
 
 function getGitHubToken() {
@@ -271,6 +289,13 @@ async function main() {
 
   console.log(`\n🎉 Successfully released ${version}!`);
   console.log(`🔗 Release URL: ${releaseData.html_url}`);
+
+  // 13. Open check-release page in default browser
+  if (config.openCheckReleaseUrl !== false && manifest.id && config.checkReleaseUrlTemplate) {
+    const checkUrl = config.checkReleaseUrlTemplate.replace('{pluginId}', encodeURIComponent(manifest.id));
+    console.log(`\n🔍 Opening check-release URL in browser...`);
+    openInBrowser(checkUrl);
+  }
 }
 
 main().catch(err => {

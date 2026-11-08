@@ -1,0 +1,13 @@
+{
+  "validateCmd": "node --check main.js",
+  "buildCmd": null,
+  "manifestPath": "manifest.json",
+  "changelogPath": "README.md",
+  "assets": [
+    "manifest.json",
+    "main.js"
+  ],
+  "optionalAssets": [
+    "styles.css"
+  ]
+}

@@ -7,6 +7,7 @@ Consider assigning it to a hotkey (I use Ctrl+F3).
 
 ## Changelog
 
-### 1.1.2
+### 1.1.3
 - Fixed an issue where case-only folder renames (e.g. lowercase to uppercase) could be blocked on case-insensitive filesystems.
-- Added automated GitHub release script.
+- Documentation improvements and added automated GitHub release script.
+

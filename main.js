@@ -65,7 +65,7 @@ class RenameFolderModal extends Modal {
 
             const newFolderPath = this.parentPath ? `${this.parentPath}/${newName}` : newName;
             const existing = this.app.vault.getAbstractFileByPath(newFolderPath);
-            if (existing) {
+            if (existing && existing !== this.folder) {
                 new Notice(`A file or folder named "${newName}" already exists.`);
                 return;
             }
